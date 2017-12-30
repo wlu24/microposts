@@ -10,7 +10,10 @@ gem 'jquery-rails', '4.3.1'
 gem 'turbolinks',   '5.0.1'
 gem 'jbuilder',     '2.7.0'
 
-gem 'bcrypt',         '3.1.11'  # Ch6, needed for has_secure_password
+
+# Ch6, needed for has_secure_password
+# provides 'has_secure_password', currently used in user.rb
+gem 'bcrypt',         '3.1.11'
 
 group :development, :test do
   gem 'sqlite3', '1.3.13'

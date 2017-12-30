@@ -11,7 +11,15 @@ class User < ApplicationRecord
   # enforces validation on password and password_confirmation attributes
   #
   # automatically adds an authenticate method to the corresponding model objects
-  has_secure_password
+  has_secure_password # method provided by the 'bcrypt' gem
 
   before_save { self.email = email.downcase }   # self keyword is optional on the right hand side
+
+
+  # Returns the hash digest of the given string.
+  def User.digest(string)
+    cost = ActiveModel::SecurePassword.min_cost ? BCrypt::Engine::MIN_COST :
+                                                  BCrypt::Engine.cost
+    BCrypt::Password.create(string, cost: cost)
+  end
 end
