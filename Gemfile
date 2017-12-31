@@ -15,6 +15,18 @@ gem 'jbuilder',     '2.7.0'
 # provides 'has_secure_password', currently used in user.rb
 gem 'bcrypt',         '3.1.11'
 
+# Ch 10.3.2 Sample users
+#
+# Ordinarily, you’d probably want to restrict the faker gem to a development
+# environment, but in the case of the sample app we’ll be using it on our
+# production site as well
+gem 'faker',          '1.7.3'
+
+
+gem 'will_paginate',           '3.1.6'
+gem 'bootstrap-will_paginate', '1.0.0'
+
+
 group :development, :test do
   gem 'sqlite3', '1.3.13'
   gem 'byebug',  '9.0.6', platform: :mri

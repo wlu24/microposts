@@ -6,7 +6,12 @@ class User < ApplicationRecord
                     format: { with: VALID_EMAIL_REGEX },
                     uniqueness: { case_sensitive: false }
 
-  validates :password, presence: true, length: { minimum: 6 }
+  # 'has_secure_password' includes a separate presence validation that
+  # specifically catches nil passwords, so setting allow_nil to true does not
+  # allow empty passwords on its own
+  # this configuration was needed for the "sucessful edit" test in user_edit test
+  validates :password, presence: true, length: { minimum: 6 }, allow_nil: true
+
 
   # enforces validation on password and password_confirmation attributes
   #
