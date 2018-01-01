@@ -27,6 +27,16 @@ gem 'will_paginate',           '3.1.6'
 gem 'bootstrap-will_paginate', '1.0.0'
 
 
+# CH 13.4 Micropost images
+gem 'carrierwave',             '1.1.0'
+gem 'mini_magick',             '4.7.0'
+gem 'fog-aws',                 '2.0.0'
+# We wouldn’t ordinarily need to specify a dependency like nokogiri explicitly, 
+# but it turns out the dependency specification in fog-aws allows for an earlier,
+# insecure version of nokogiri, so we need to take the care to update the version
+# number by hand
+gem 'nokogiri',                '1.8.1'  # fog-aws dependency gem
+
 group :development, :test do
   gem 'sqlite3', '1.3.13'
   gem 'byebug',  '9.0.6', platform: :mri
