@@ -1,5 +1,18 @@
 class User < ApplicationRecord
   has_many :microposts, dependent: :destroy
+  has_many :active_relationships, class_name:  "Relationship",
+                                  foreign_key: "follower_id",
+                                  dependent:   :destroy
+  has_many :passive_relationships, class_name:  "Relationship",
+                                   foreign_key: "followed_id",
+                                   dependent:   :destroy
+  has_many :following, through: :active_relationships, source: :followed
+  # in the case of a :followers attribute, Rails will singularize “followers”
+  # and automatically look for the foreign key follower_id in this case
+  #
+  # keep the :source key to emphasize the parallel structure with the
+  # has_many :following association.
+  has_many :followers, through: :passive_relationships, source: :follower
 
   attr_accessor :remember_token, :activation_token, :reset_token
   before_save   :downcase_email
@@ -91,6 +104,39 @@ class User < ApplicationRecord
   def feed
     Micropost.where("user_id = ?", id)
   end
+
+
+
+
+  # Follows a user.
+  def follow(other_user)
+    # from Ruby on Rails 5.1.4 documentation:
+    # Module
+    # ActiveRecord::Associations::ClassMethods
+    # activerecord/lib/active_record/associations.rb
+    #
+    # method collection<<(object, …):
+    #
+    # Adds one or more objects to the collection by
+    # creating associations in the join table (collection.push and
+    # collection.concat are aliases to this method). Note that this operation
+    # instantly fires update SQL without waiting for the save or update call
+    # on the parent object, unless the parent object is a new record.
+    following << other_user
+  end
+
+  # Unfollows a user.
+  def unfollow(other_user)
+    following.delete(other_user)
+  end
+
+  # Returns true if the current user is following the other user.
+  def following?(other_user)
+    following.include?(other_user)
+  end
+
+
+
 
   private
 
