@@ -102,7 +102,35 @@ class User < ApplicationRecord
 
 
   def feed
-    Micropost.where("user_id = ?", id)
+    # self.following_ids    self omitted
+    #
+    # the following_ids method is synthesized by Active Record based on the
+    # has_many :following association; the result is that we need
+    # only append _ids to the association name to get the ids corresponding to
+    # the user.following collection
+    #
+    # amounts to calling self.following.map(&:id), which returns an array of
+    # strings, each is the id of a 'followed' user
+    #
+    # this implementation is inefficient because pulls all the followed users’
+    # ids into memory, and creates an array the full length of the followed
+    # users array
+    #
+    # Micropost.where("user_id IN (?) OR user_id = ?", following_ids, id)
+
+
+
+    # A more efficient implementation using a subquery.
+    # This arranges for all the set logic to be pushed into the database.
+    #
+    # For yet more efficient implementation, look into how to generate the feed
+    # asynchronously using a background job
+    following_ids = "SELECT followed_id FROM relationships
+                     WHERE  follower_id = :user_id"
+    Micropost.where("user_id IN (#{following_ids})
+                     OR user_id = :user_id", user_id: id)
+
+
   end
 
 
